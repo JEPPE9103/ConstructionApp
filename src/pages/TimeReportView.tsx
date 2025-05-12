@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, FileText, Filter } from 'lucide-react';
+import { Calendar, FileText, Filter } from 'lucide-react';
 
 interface TimeReport {
   id: string;
@@ -11,7 +11,7 @@ interface TimeReport {
 
 const TimeReportView: React.FC = () => {
   const [timeFilter, setTimeFilter] = useState<'week' | 'month' | 'all'>('week');
-  const [reports, setReports] = useState<TimeReport[]>([]); // This would be populated from your backend
+  const [reports] = useState<TimeReport[]>([]);// This would be populated from your backend
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
 
