@@ -1,4 +1,3 @@
-import React from 'react';
 import { FiClock, FiMapPin, FiUpload, FiHome, FiLogOut } from 'react-icons/fi';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { auth } from '../config/firebase';
