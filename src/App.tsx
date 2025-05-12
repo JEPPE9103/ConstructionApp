@@ -3,6 +3,7 @@ import { Login } from './pages/Login';
 import Register from './pages/Register';
 import DashboardPage from './pages/DashboardPage';
 import TimeReportCard from './pages/TimeReportCard';
+import TimeReportView from './pages/TimeReportView';
 import CheckInCard from './pages/CheckInCard';
 import UploadPhotoCard from './pages/UploadPhotoCard';
 import DashboardHomeCards from './pages/DashboardHomeCards';
@@ -26,6 +27,7 @@ function App() {
         >
           <Route index element={<DashboardHomeCards />} />
           <Route path="time-report" element={<TimeReportCard />} />
+          <Route path="time-report/view" element={<TimeReportView />} />
           <Route path="check-in" element={<CheckInCard />} />
           <Route path="upload" element={<UploadPhotoCard />} />
           {/* <Route path="upload" element={<UploadPhotoCard />} /> */}

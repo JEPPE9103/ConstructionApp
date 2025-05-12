@@ -1,12 +1,22 @@
 import { Calendar, Clock, Folder, FileText } from 'lucide-react';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const TimeReportCard: React.FC = () => {
   return (
     <div className="w-full bg-gradient-to-br from-[#f8fbff] to-[#f0f4ff] rounded-2xl shadow-xl p-8 animate-fade-in">
-      <div className="flex items-center mb-8 gap-3">
-        <Clock className="text-blue-500" size={32} />
-        <h1 className="text-2xl font-bold text-gray-800">Time Report</h1>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-3">
+          <Clock className="text-blue-500" size={32} />
+          <h1 className="text-2xl font-bold text-gray-800">Time Report</h1>
+        </div>
+        <Link
+          to="/dashboard/time-report/view"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <FileText size={20} />
+          View Reports
+        </Link>
       </div>
       <form className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
