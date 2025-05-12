@@ -3,7 +3,7 @@ import React from 'react';
 
 const CheckInCard: React.FC = () => {
   return (
-    <div className="w-full bg-gradient-to-br from-[#e8fef1] to-[#f8fbff] rounded-2xl shadow-xl p-8 animate-fade-in">
+    <div className="w-full bg-gradient-to-br from-[#e8fef1] to-[#f8fbff] rounded-2xl shadow-xl p-4 md:p-8 animate-fade-in">
       <div className="flex items-center mb-8 gap-3">
         <MapPin className="text-green-500" size={32} />
         <h1 className="text-2xl font-bold text-gray-800">Check In/Out</h1>
@@ -60,7 +60,7 @@ const CheckInCard: React.FC = () => {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-lg shadow transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-300"
+            className="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-lg shadow transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-300"
           >
             Submit Check In
           </button>

@@ -4,15 +4,15 @@ import { Link } from 'react-router-dom';
 
 const TimeReportCard: React.FC = () => {
   return (
-    <div className="w-full bg-gradient-to-br from-[#f8fbff] to-[#f0f4ff] rounded-2xl shadow-xl p-8 animate-fade-in">
-      <div className="flex items-center justify-between mb-8">
+    <div className="w-full bg-gradient-to-br from-[#f8fbff] to-[#f0f4ff] rounded-2xl shadow-xl p-4 md:p-8 animate-fade-in">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-3">
           <Clock className="text-blue-500" size={32} />
           <h1 className="text-2xl font-bold text-gray-800">Time Report</h1>
         </div>
         <Link
           to="/dashboard/time-report/view"
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors w-full md:w-auto"
         >
           <FileText size={20} />
           View Reports
@@ -71,7 +71,7 @@ const TimeReportCard: React.FC = () => {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
           >
             Submit Report
           </button>
