@@ -1,20 +1,23 @@
-import { FiClock, FiMapPin, FiUpload, FiHome, FiLogOut } from 'react-icons/fi';
+import { FiClock, FiDollarSign, FiMap, FiMapPin, FiUpload, FiHome, FiLogOut } from 'react-icons/fi';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { auth } from '../config/firebase';
+import { auth } from '../../config/firebase';
 
-// If you haven't installed react-icons, run: npm install react-icons
-
-// Dummy user data (replace with real auth/user context if available)
+// Dummy user data (byt ut med riktig auth i framtiden)
 const user = {
   name: 'Jesper',
   email: 'jespe9103@gmail.com',
+  isAdmin: true, // Byt till roll från backend sen
 };
 
+// Navigation länkar
 const navLinks = [
   { name: 'Dashboard', to: '/dashboard', icon: <FiHome size={20} /> },
   { name: 'Time Report', to: '/dashboard/time-report', icon: <FiClock size={20} /> },
   { name: 'Check In/Out', to: '/dashboard/check-in', icon: <FiMapPin size={20} /> },
+  { name: 'Map Check-In', to: '/dashboard/check-in/map', icon: <FiMap size={20} /> },
+  { name: 'Salary', to: '/dashboard/salary', icon: <FiDollarSign size={20} /> },
   { name: 'Upload Photo', to: '/dashboard/upload', icon: <FiUpload size={20} /> },
+  ...(user.isAdmin ? [{ name: 'Admin Panel', to: '/dashboard/admin', icon: <FiHome size={20} /> }] : []),
 ];
 
 const Sidebar = () => (
@@ -29,7 +32,9 @@ const Sidebar = () => (
           key={link.name}
           to={link.to}
           className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 transition font-medium ${isActive ? 'bg-blue-50 text-blue-600' : ''}`
+            `flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 transition font-medium ${
+              isActive ? 'bg-blue-50 text-blue-600' : ''
+            }`
           }
           end={link.to === '/dashboard'}
         >
@@ -43,6 +48,7 @@ const Sidebar = () => (
 
 const Topbar = () => {
   const navigate = useNavigate();
+
   const handleSignOut = async () => {
     try {
       await auth.signOut();
@@ -90,4 +96,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage; 
+export default DashboardPage;
