@@ -17,8 +17,8 @@ const mockEmployees: Employee[] = [
   },
   {
     id: '2',
-    name: 'Stina Andersson',
-    email: 'stina.andersson@example.com',
+    name: 'Claudia Luna',
+    email: 'claudia.luna@example.com',
     atfHours: 40.0,
   },
 ];
