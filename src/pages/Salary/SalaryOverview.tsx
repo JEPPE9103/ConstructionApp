@@ -1,5 +1,5 @@
 // src/pages/Salary/SalaryOverview.tsx
-import { FiDollarSign, FiClock, FiCalendar } from 'react-icons/fi';
+import { FiDollarSign, FiCalendar } from 'react-icons/fi';
 
 const SalaryOverview = () => {
   const salaryInfo = {

@@ -30,7 +30,8 @@ const ProjectInfo = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const project = id ? dummyProjectDetails[id] : null;
+  const project = id ? dummyProjectDetails[id as keyof typeof dummyProjectDetails] : null;
+
 
   if (!project) {
     return <div className="text-red-600">Projektet hittades inte.</div>;
