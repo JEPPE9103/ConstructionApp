@@ -1,14 +1,9 @@
 // ✅ TimeReportCard.tsx
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, Folder, FileText, Trash2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
+import { Clock, Folder, FileText, Trash2 } from 'lucide-react';
 import { collection, addDoc, serverTimestamp, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../../config/firebase';
 import styled from 'styled-components';
-import { doc as getDoc, getDoc as getDocument } from 'firebase/firestore';
 import { getCurrentUserWithRole } from '../../utils/auth';
 
 interface TimeReport {

@@ -1,7 +1,7 @@
 import { FiClock, FiDollarSign, FiMap, FiMapPin, FiUpload, FiHome, FiLogOut, FiMenu } from 'react-icons/fi';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 // Dummy user data (byt ut med riktig auth i framtiden)
 const user = {

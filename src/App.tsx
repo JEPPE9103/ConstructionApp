@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Login } from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
@@ -15,16 +14,9 @@ import MapCheckIn from './pages/CheckIn/MapCheckIn';
 import ProjectInfo from './pages/Projects/ProjectInfo';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import AdminPanel from './pages/Admin/AdminPanel';
-import { useEffect, useState } from 'react';
-import { getCurrentUserWithRole } from './utils/auth';
 import './App.css';
 
 function App() {
-  const [user, setUser] = useState<any>(null);
-  useEffect(() => {
-    getCurrentUserWithRole().then(setUser);
-  }, []);
-
   return (
     <Router>
       <Routes>

@@ -1,15 +1,6 @@
 import { auth, db } from '../config/firebase';
-import { 
-  doc, 
-  getDoc, 
-  setDoc, 
-  collection, 
-  query, 
-  where, 
-  getDocs, 
-  serverTimestamp 
-} from 'firebase/firestore';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, getDoc, setDoc, collection, getDocs, serverTimestamp } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 export interface UserData {
   uid: string;
