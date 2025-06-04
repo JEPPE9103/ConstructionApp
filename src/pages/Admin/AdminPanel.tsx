@@ -1,71 +1,133 @@
-import React, { useState } from 'react';
-import { Search } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { db } from '../../config/firebase';
+import { getCurrentUserWithRole } from '../../utils/auth';
+import styled from 'styled-components';
 
-interface Employee {
-  id: string;
-  name: string;
-  email: string;
-  atfHours: number;
-}
+const Container = styled.div`
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 32px 24px;
+  background: #f5f8ff;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+`;
 
-const mockEmployees: Employee[] = [
-  {
-    id: '1',
-    name: 'Jesper Persson',
-    email: 'jespetipersson@example.com',
-    atfHours: 52.0,
-  },
-  {
-    id: '2',
-    name: 'Claudia Luna',
-    email: 'claudia.luna@example.com',
-    atfHours: 40.0,
-  },
-];
+const Title = styled.h2`
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+`;
+
+const UserList = styled.ul`
+  margin-top: 24px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.07);
+  padding: 16px;
+`;
+
+const UserItem = styled.li`
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  &:last-child { border-bottom: none; }
+`;
+
+const Input = styled.input`
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  margin-right: 8px;
+`;
+
+const Button = styled.button`
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  &:hover { background-color: #0056b3; }
+`;
+
+const Message = styled.div`
+  margin-top: 16px;
+  color: #dc3545;
+`;
 
 const AdminPanel: React.FC = () => {
-  const [search, setSearch] = useState('');
+  const [users, setUsers] = useState<any[]>([]);
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  const filteredEmployees = mockEmployees.filter((emp) =>
-    emp.name.toLowerCase().includes(search.toLowerCase())
-  );
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const currentUser = await getCurrentUserWithRole();
+      if (!currentUser || currentUser.role !== 'admin') {
+        setMessage('Du har inte behörighet att se denna sida.');
+        setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
+      setIsAdmin(true);
+      const q = query(collection(db, 'users'), where('companyId', '==', currentUser.companyId));
+      const snapshot = await getDocs(q);
+      setUsers(snapshot.docs.map(doc => doc.data()));
+      setLoading(false);
+    };
+    fetchUsers();
+  }, []);
+
+  const handleUpgrade = async () => {
+    setMessage('');
+    const userToUpgrade = users.find(u => u.email === email);
+    if (!userToUpgrade) {
+      setMessage('Ingen användare med den e-postadressen.');
+      return;
+    }
+    try {
+      await updateDoc(doc(db, 'users', userToUpgrade.uid), { role: 'admin' });
+      setMessage('Användaren är nu admin!');
+      setUsers(users.map(u => u.uid === userToUpgrade.uid ? { ...u, role: 'admin' } : u));
+    } catch (err) {
+      setMessage('Kunde inte uppgradera användaren.');
+    }
+  };
+
+  if (loading) return <Container>Laddar...</Container>;
+  if (!isAdmin) return <Container>{message}</Container>;
 
   return (
-    <div className="w-full max-w-3xl mx-auto bg-white rounded-xl shadow-md p-6 mt-8 animate-fade-in">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Adminpanel</h1>
-
-      {/* Search field */}
-      <div className="relative mb-6">
-        <input
-          type="text"
-          placeholder="Sök anställd"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg pl-10 focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+    <Container>
+      <Title>Adminpanel</Title>
+      <div style={{ marginBottom: 24 }}>
+        <Input
+          type="email"
+          placeholder="Användarens e-post"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
         />
-        <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
+        <Button onClick={handleUpgrade}>Gör till admin</Button>
       </div>
-
-      {/* Employee list */}
-      <ul className="space-y-3">
-        {filteredEmployees.map((emp) => (
-          <li
-            key={emp.id}
-            className="flex items-center justify-between bg-gray-50 hover:bg-gray-100 rounded-lg p-4 transition cursor-pointer"
-          >
-            <div>
-              <p className="font-medium text-gray-800">{emp.name}</p>
-              <p className="text-sm text-gray-500">{emp.email}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-500">ATF</p>
-              <p className="text-lg font-semibold text-blue-600">{emp.atfHours.toFixed(1)} h</p>
-            </div>
-          </li>
+      {message && <Message>{message}</Message>}
+      <h3 style={{ marginTop: 32, fontWeight: 600 }}>Användare i företaget:</h3>
+      <UserList>
+        {users.map(u => (
+          <UserItem key={u.uid}>
+            <span>{u.name} ({u.email})</span>
+            <span style={{ fontWeight: 500, color: u.role === 'admin' ? '#007bff' : '#333' }}>{u.role}</span>
+          </UserItem>
         ))}
-      </ul>
-    </div>
+      </UserList>
+    </Container>
   );
 };
 
-export default AdminPanel;
+export default AdminPanel; 

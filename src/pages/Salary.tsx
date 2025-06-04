@@ -1,8 +1,7 @@
-// src/pages/Salary/SalaryOverview.tsx
 import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../config/firebase';
-import { getCurrentUserWithRole } from '../../utils/auth';
+import { db } from '../config/firebase';
+import { getCurrentUserWithRole } from '../utils/auth';
 import styled from 'styled-components';
 
 interface TimeReport {
@@ -11,13 +10,14 @@ interface TimeReport {
   date: string;
   hours: number;
   description: string;
+  project: string;
 }
 
 interface Salary {
   id: string;
   userId: string;
   month: string;
-  salaryAmount: number;
+  gross: number;
   comment?: string;
   createdAt: any;
 }
@@ -29,9 +29,12 @@ interface MonthlySummary {
 }
 
 const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 32px 24px;
+  background: #f5f8ff;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 `;
 
 const Form = styled.form`
@@ -119,16 +122,16 @@ const MonthlyCard = styled.div`
   margin-bottom: 20px;
 `;
 
-const SalaryOverview: React.FC = () => {
+const Salary: React.FC = () => {
   const [formData, setFormData] = useState({
     month: '',
-    salaryAmount: '',
+    gross: '',
     comment: ''
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [monthlySummaries, setMonthlySummaries] = useState<MonthlySummary[]>([]);
+  const [monthlySummary, setMonthlySummary] = useState<MonthlySummary | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
@@ -140,43 +143,39 @@ const SalaryOverview: React.FC = () => {
         return;
       }
 
-      // Hämta löner
+      // Hämta lön för aktuell månad
+      const currentMonth = new Date().toISOString().substring(0, 7);
       const salariesRef = collection(db, 'salaries');
-      const salariesQuery = query(salariesRef, where('userId', '==', user.uid));
+      const salariesQuery = query(
+        salariesRef, 
+        where('userId', '==', user.uid),
+        where('month', '==', currentMonth)
+      );
       const salariesSnapshot = await getDocs(salariesQuery);
-      const salaries = salariesSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Salary[];
+      const salary = salariesSnapshot.docs[0]?.data() as Salary | undefined;
 
-      // Hämta tidrapporter
+      // Hämta tidrapporter för aktuell månad
       const reportsRef = collection(db, 'timereports');
-      const reportsQuery = query(reportsRef, where('userId', '==', user.uid));
+      const reportsQuery = query(
+        reportsRef,
+        where('userId', '==', user.uid),
+        where('date', '>=', `${currentMonth}-01`),
+        where('date', '<=', `${currentMonth}-31`)
+      );
       const reportsSnapshot = await getDocs(reportsQuery);
       const reports = reportsSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as TimeReport[];
 
-      // Skapa månatliga sammanfattningar
-      const summaries: MonthlySummary[] = [];
-      const months = new Set([...salaries.map(s => s.month), ...reports.map(r => r.date.substring(0, 7))]);
+      // Beräkna totala timmar
+      const totalHours = reports.reduce((sum, report) => sum + report.hours, 0);
 
-      months.forEach(month => {
-        const monthSalary = salaries.find(s => s.month === month) || null;
-        const monthReports = reports.filter(r => r.date.startsWith(month));
-        const totalHours = monthReports.reduce((sum, report) => sum + report.hours, 0);
-
-        summaries.push({
-          month,
-          salary: monthSalary,
-          totalHours
-        });
+      setMonthlySummary({
+        month: currentMonth,
+        salary: salary || null,
+        totalHours
       });
-
-      // Sortera efter månad (nyast först)
-      summaries.sort((a, b) => b.month.localeCompare(a.month));
-      setMonthlySummaries(summaries);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -202,7 +201,7 @@ const SalaryOverview: React.FC = () => {
       setError('Välj en månad');
       return false;
     }
-    if (!formData.salaryAmount || isNaN(Number(formData.salaryAmount)) || Number(formData.salaryAmount) <= 0) {
+    if (!formData.gross || isNaN(Number(formData.gross)) || Number(formData.gross) <= 0) {
       setError('Ange ett giltigt lönebelopp');
       return false;
     }
@@ -229,24 +228,19 @@ const SalaryOverview: React.FC = () => {
     try {
       const salaryData = {
         userId: user.uid,
-        companyId: user.companyId,
         month: formData.month,
-        salaryAmount: Number(formData.salaryAmount),
+        gross: Number(formData.gross),
         comment: formData.comment.trim() || null,
         createdAt: serverTimestamp()
       };
 
       await addDoc(collection(db, 'salaries'), salaryData);
-      console.log('Salary saved');
-      
       setSuccess('Lön sparad');
       setFormData({
         month: '',
-        salaryAmount: '',
+        gross: '',
         comment: ''
       });
-
-      // Uppdatera listan
       await fetchData();
     } catch (err) {
       console.error('Error saving salary:', err);
@@ -263,95 +257,98 @@ const SalaryOverview: React.FC = () => {
   };
 
   if (loading) {
-    return <div>Laddar...</div>;
+    return (
+      <Container>
+        <div className="flex justify-center items-center h-64">
+          <p className="text-gray-600">Laddar...</p>
+        </div>
+      </Container>
+    );
   }
 
   return (
     <Container>
-      <h1 className="text-2xl font-bold mb-6">Lön & Tidrapporter</h1>
+      <h1 className="text-2xl font-bold mb-6">Löneöversikt</h1>
 
-      <Form onSubmit={handleSubmit}>
-        <h2 className="text-xl font-semibold mb-4">Registrera lön</h2>
-        
-        <FormGroup>
-          <Label htmlFor="month">Månad</Label>
-          <Input
-            type="month"
-            id="month"
-            name="month"
-            value={formData.month}
-            onChange={handleChange}
-            required
-          />
-        </FormGroup>
+      {!monthlySummary?.salary ? (
+        <Form onSubmit={handleSubmit}>
+          <h2 className="text-xl font-semibold mb-4">Registrera lön</h2>
+          
+          <FormGroup>
+            <Label htmlFor="month">Månad</Label>
+            <Input
+              type="month"
+              id="month"
+              name="month"
+              value={formData.month}
+              onChange={handleChange}
+              required
+            />
+          </FormGroup>
 
-        <FormGroup>
-          <Label htmlFor="salaryAmount">Lönebelopp (kr)</Label>
-          <Input
-            type="number"
-            id="salaryAmount"
-            name="salaryAmount"
-            value={formData.salaryAmount}
-            onChange={handleChange}
-            min="0"
-            step="100"
-            required
-          />
-        </FormGroup>
+          <FormGroup>
+            <Label htmlFor="gross">Lönebelopp (brutto)</Label>
+            <Input
+              type="number"
+              id="gross"
+              name="gross"
+              value={formData.gross}
+              onChange={handleChange}
+              min="0"
+              step="100"
+              required
+            />
+          </FormGroup>
 
-        <FormGroup>
-          <Label htmlFor="comment">Kommentar (valfritt)</Label>
-          <TextArea
-            id="comment"
-            name="comment"
-            value={formData.comment}
-            onChange={handleChange}
-          />
-        </FormGroup>
+          <FormGroup>
+            <Label htmlFor="comment">Kommentar (valfritt)</Label>
+            <TextArea
+              id="comment"
+              name="comment"
+              value={formData.comment}
+              onChange={handleChange}
+            />
+          </FormGroup>
 
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-        {success && <SuccessMessage>{success}</SuccessMessage>}
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+          {success && <SuccessMessage>{success}</SuccessMessage>}
 
-        <SubmitButton type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Sparar...' : 'Spara lön'}
-        </SubmitButton>
-      </Form>
+          <SubmitButton type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Sparar...' : 'Spara lön'}
+          </SubmitButton>
+        </Form>
+      ) : (
+        <MonthlyCard>
+          <h2 className="text-xl font-semibold mb-4">
+            {formatMonth(monthlySummary.month)}
+          </h2>
+          
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="text-gray-600">🗓️ Månad:</span>
+              <span>{formatMonth(monthlySummary.month)}</span>
+            </div>
 
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Månatlig översikt</h2>
-        {monthlySummaries.length === 0 ? (
-          <p>Inga löner eller tidrapporter hittades</p>
-        ) : (
-          monthlySummaries.map(summary => (
-            <MonthlyCard key={summary.month}>
-              <h3 className="text-lg font-semibold mb-2">
-                {formatMonth(summary.month)}
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-gray-600">Arbetade timmar</p>
-                  <p className="text-xl font-semibold">{summary.totalHours} h</p>
-                </div>
-                {summary.salary && (
-                  <div>
-                    <p className="text-gray-600">Lön</p>
-                    <p className="text-xl font-semibold">
-                      {summary.salary.salaryAmount.toLocaleString()} kr
-                    </p>
-                    {summary.salary.comment && (
-                      <p className="text-sm text-gray-500 mt-1">
-                        {summary.salary.comment}
-                      </p>
-                    )}
-                  </div>
-                )}
+            <div className="flex items-center gap-2">
+              <span className="text-gray-600">🕐 Arbetade timmar:</span>
+              <span>{monthlySummary.totalHours} h</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-gray-600">💰 Lön (brutto):</span>
+              <span>{monthlySummary.salary.gross.toLocaleString()} kr</span>
+            </div>
+
+            {monthlySummary.salary.comment && (
+              <div className="mt-4 text-sm text-gray-500">
+                <span className="font-medium">Kommentar:</span> {monthlySummary.salary.comment}
               </div>
-            </MonthlyCard>
-          ))
-        )}
-      </div>
+            )}
+          </div>
+        </MonthlyCard>
+      )}
     </Container>
   );
 };
 
-export default SalaryOverview;
+export default Salary; 

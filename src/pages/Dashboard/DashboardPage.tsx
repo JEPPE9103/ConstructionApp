@@ -1,6 +1,7 @@
-import { FiClock, FiDollarSign, FiMap, FiMapPin, FiUpload, FiHome, FiLogOut } from 'react-icons/fi';
+import { FiClock, FiDollarSign, FiMap, FiMapPin, FiUpload, FiHome, FiLogOut, FiMenu } from 'react-icons/fi';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase';
+import React, { useState } from 'react';
 
 // Dummy user data (byt ut med riktig auth i framtiden)
 const user = {
@@ -20,7 +21,7 @@ const navLinks = [
   ...(user.isAdmin ? [{ name: 'Admin Panel', to: '/dashboard/admin', icon: <FiHome size={20} /> }] : []),
 ];
 
-const Sidebar = () => (
+const Sidebar = ({ onClose }: { onClose?: () => void }) => (
   <aside className="w-64 min-h-screen bg-white border-r flex flex-col">
     <div className="flex items-center gap-2 px-6 py-6 border-b">
       <span className="text-blue-600"><FiHome size={28} /></span>
@@ -37,6 +38,7 @@ const Sidebar = () => (
             }`
           }
           end={link.to === '/dashboard'}
+          onClick={onClose}
         >
           {link.icon}
           {link.name}
@@ -46,7 +48,22 @@ const Sidebar = () => (
   </aside>
 );
 
-const Topbar = () => {
+const MobileDrawer = ({ open, onClose }: { open: boolean; onClose: () => void }) => (
+  <div className={`fixed inset-0 z-40 ${open ? '' : 'pointer-events-none'}`}> 
+    {/* Overlay */}
+    <div
+      className={`fixed inset-0 bg-black transition-opacity duration-200 ${open ? 'opacity-40' : 'opacity-0'}`}
+      onClick={onClose}
+      aria-hidden="true"
+    />
+    {/* Drawer */}
+    <div className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-200 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
+      <Sidebar onClose={onClose} />
+    </div>
+  </div>
+);
+
+const Topbar = ({ onMenuClick }: { onMenuClick: () => void }) => {
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -59,8 +76,12 @@ const Topbar = () => {
   };
 
   return (
-    <header className="flex justify-end items-center h-16 px-8 border-b bg-white">
-      <div className="flex items-center gap-3">
+    <header className="flex justify-between items-center h-16 px-4 md:px-8 border-b bg-white w-full">
+      {/* Hamburger for mobile */}
+      <button className="md:hidden p-2 rounded hover:bg-gray-100" onClick={onMenuClick} aria-label="Öppna meny">
+        <FiMenu size={26} />
+      </button>
+      <div className="flex items-center gap-3 ml-auto">
         <div className="text-right">
           <div className="font-semibold text-gray-800">{user.name}</div>
           <div className="text-xs text-gray-500">{user.email}</div>
@@ -81,12 +102,19 @@ const Topbar = () => {
 };
 
 const DashboardPage = () => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   return (
     <div className="flex min-h-screen bg-white">
-      <Sidebar />
+      {/* Sidebar for desktop */}
+      <div className="hidden md:flex">
+        <Sidebar />
+      </div>
+      {/* Drawer for mobile */}
+      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <div className="flex-1 flex flex-col min-h-screen">
-        <Topbar />
-        <main className="flex-1 p-8 flex flex-col items-center bg-white">
+        <Topbar onMenuClick={() => setDrawerOpen(true)} />
+        <main className="flex-1 flex flex-col items-center bg-white container mx-auto px-4 py-4">
           <div className="w-full max-w-5xl">
             <Outlet />
           </div>

@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { DollarSign, Clock, ArrowRightCircle } from 'lucide-react';
 
 const SalaryCard: React.FC = () => {
-  const monthlySalary = 35200; // Byt ut med backend-data
+  const [monthlySalary, setMonthlySalary] = useState(0);
+
   const overtimeBalance = 6.5;
   const atf = 4.5;
   const upcomingPayout = 2;
+
+  useEffect(() => {
+    const saved = localStorage.getItem('userBaseSalary');
+    if (saved) {
+      setMonthlySalary(parseInt(saved));
+    } else {
+      setMonthlySalary(35200); // fallback default
+    }
+  }, []);
 
   return (
     <div className="w-full bg-gradient-to-br from-[#fff9f9] to-[#f0f8ff] rounded-2xl shadow-xl p-4 md:p-8 animate-fade-in">
@@ -45,7 +55,7 @@ const SalaryCard: React.FC = () => {
         </li>
       </ul>
 
-      {/* View details (placeholder for future) */}
+      {/* View details */}
       <div className="flex justify-end mt-6">
         <button className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg shadow transition hover:scale-105">
           View Details <ArrowRightCircle size={20} />

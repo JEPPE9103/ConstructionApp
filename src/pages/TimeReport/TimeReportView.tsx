@@ -1,7 +1,9 @@
+// src/pages/TimeReport/TimeReportView.tsx
 import React, { useEffect, useState } from 'react';
 import { Calendar, FileText, Filter } from 'lucide-react';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../config/firebase'; // se till att db exporteras i firebase.ts
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db, auth } from '../../config/firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 interface TimeReport {
   id: string;
@@ -9,9 +11,11 @@ interface TimeReport {
   hours: number;
   project: string;
   description: string;
+  userId: string;
 }
 
 const TimeReportView: React.FC = () => {
+  const [user] = useAuthState(auth);
   const [timeFilter, setTimeFilter] = useState<'week' | 'month' | 'all'>('week');
   const [reports, setReports] = useState<TimeReport[]>([]);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -19,13 +23,16 @@ const TimeReportView: React.FC = () => {
 
   useEffect(() => {
     const fetchReports = async () => {
-      const snapshot = await getDocs(collection(db, 'timeReports'));
+      if (!user) return;
+
+      const q = query(collection(db, 'timereports'), where('userId', '==', user.uid));
+      const snapshot = await getDocs(q);
       const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as TimeReport[];
       setReports(data);
     };
 
     fetchReports();
-  }, []);
+  }, [user]);
 
   const getFilteredReports = () => {
     const now = new Date();
