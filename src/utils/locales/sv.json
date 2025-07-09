@@ -78,5 +78,18 @@
   "passwords_do_not_match": "Lösenorden matchar inte",
   "password_too_short": "Lösenordet måste vara minst 6 tecken",
   "already_have_account": "Har du redan ett konto?",
-  "login_here": "Logga in här"
+  "login_here": "Logga in här",
+  "check_type": "Typ av in-/utcheckning",
+  "check_in": "Checka in",
+  "check_out": "Checka ut",
+  "select_project": "Välj projekt",
+  "location": "Plats",
+  "enter_location": "Ange din plats",
+  "notes": "Anteckningar",
+  "add_notes": "Lägg till eventuella anteckningar...",
+  "submit_check_in": "Skicka incheckning",
+  "could_not_fetch_location": "Kunde inte hämta platsinformation.",
+  "you_are_here": "Du är här",
+  "checked_in": "Incheckad ✅",
+  "fetching_location": "Hämtar plats..."
 } 

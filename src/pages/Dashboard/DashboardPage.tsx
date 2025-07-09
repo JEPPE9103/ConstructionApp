@@ -13,13 +13,13 @@ const user = {
 
 // Navigation länkar
 const navLinks = [
-  { name: 'Dashboard', to: '/dashboard', icon: <FiHome size={20} /> },
-  { name: 'Time Report', to: '/dashboard/time-report', icon: <FiClock size={20} /> },
-  { name: 'Check In/Out', to: '/dashboard/check-in', icon: <FiMapPin size={20} /> },
-  { name: 'Map Check-In', to: '/dashboard/check-in/map', icon: <FiMap size={20} /> },
-  { name: 'Salary', to: '/dashboard/salary', icon: <FiDollarSign size={20} /> },
-  { name: 'Upload Photo', to: '/dashboard/upload', icon: <FiUpload size={20} /> },
-  ...(user.isAdmin ? [{ name: 'Admin Panel', to: '/dashboard/admin', icon: <FiHome size={20} /> }] : []),
+  { key: 'dashboard', name: 'Dashboard', to: '/dashboard', icon: <FiHome size={20} /> },
+  { key: 'time_report', name: 'Time Report', to: '/dashboard/time-report', icon: <FiClock size={20} /> },
+  { key: 'check_in_out', name: 'Check In/Out', to: '/dashboard/check-in', icon: <FiMapPin size={20} /> },
+  { key: 'map_check_in', name: 'Map Check-In', to: '/dashboard/check-in/map', icon: <FiMap size={20} /> },
+  { key: 'salary', name: 'Salary', to: '/dashboard/salary', icon: <FiDollarSign size={20} /> },
+  { key: 'upload_photo', name: 'Upload Photo', to: '/dashboard/upload', icon: <FiUpload size={20} /> },
+  ...(user.isAdmin ? [{ key: 'admin_panel', name: 'Admin Panel', to: '/dashboard/admin', icon: <FiHome size={20} /> }] : []),
 ];
 
 const Sidebar = ({ onClose }: { onClose?: () => void }) => {
@@ -33,7 +33,7 @@ const Sidebar = ({ onClose }: { onClose?: () => void }) => {
       <nav className="flex-1 px-2 py-4 space-y-1">
         {navLinks.map((link) => (
           <NavLink
-            key={link.name}
+            key={link.key}
             to={link.to}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 transition font-medium ${
@@ -44,7 +44,7 @@ const Sidebar = ({ onClose }: { onClose?: () => void }) => {
             onClick={onClose}
           >
             {link.icon}
-            {t(link.name.replace(/ /g, '_').toLowerCase())}
+            {t(link.key)}
           </NavLink>
         ))}
       </nav>

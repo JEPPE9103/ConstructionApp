@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { getCurrentLocation } from '../../utils/geolocation'; // Se till att denna fil finns
 import 'leaflet/dist/leaflet.css';
+import { useTranslation } from 'react-i18next';
 
 const MapCheckIn = () => {
+  const { t } = useTranslation();
   const [position, setPosition] = useState<[number, number] | null>(null);
   const [checkedIn, setCheckedIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -14,13 +16,13 @@ const MapCheckIn = () => {
         const pos = await getCurrentLocation();
         setPosition([pos.coords.latitude, pos.coords.longitude]);
       } catch (err: any) {
-        setError('Kunde inte hämta platsinformation.');
+        setError(t('could_not_fetch_location'));
         console.error(err);
       }
     };
 
     fetchLocation();
-  }, []);
+  }, [t]);
 
   const handleCheckIn = () => {
     // Här skickar du till Firebase eller din backend
@@ -38,16 +40,16 @@ const MapCheckIn = () => {
           <Marker position={position}>
             <Popup>
               <div className="text-sm">
-                Du är här
+                {t('you_are_here')}
                 {!checkedIn ? (
                   <button
                     onClick={handleCheckIn}
                     className="mt-2 block bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
                   >
-                    Checka in
+                    {t('check_in')}
                   </button>
                 ) : (
-                  <p className="text-green-600 mt-2">Incheckad ✅</p>
+                  <p className="text-green-600 mt-2">{t('checked_in')}</p>
                 )}
               </div>
             </Popup>
@@ -55,7 +57,7 @@ const MapCheckIn = () => {
         </MapContainer>
       ) : (
         <div className="flex justify-center items-center h-full text-gray-500">
-          {error || 'Hämtar plats...'}
+          {error || t('fetching_location')}
         </div>
       )}
     </div>

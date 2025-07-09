@@ -78,5 +78,18 @@
   "passwords_do_not_match": "Passwords do not match",
   "password_too_short": "Password must be at least 6 characters",
   "already_have_account": "Already have an account?",
-  "login_here": "Log in here"
+  "login_here": "Log in here",
+  "check_type": "Check Type",
+  "check_in": "Check In",
+  "check_out": "Check Out",
+  "select_project": "Select a project",
+  "location": "Location",
+  "enter_location": "Enter your location",
+  "notes": "Notes",
+  "add_notes": "Add any additional notes...",
+  "submit_check_in": "Submit Check In",
+  "could_not_fetch_location": "Could not fetch location information.",
+  "you_are_here": "You are here",
+  "checked_in": "Checked in ✅",
+  "fetching_location": "Fetching location..."
 } 
