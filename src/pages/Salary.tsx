@@ -3,6 +3,7 @@ import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'fire
 import { db } from '../config/firebase';
 import { getCurrentUserWithRole } from '../utils/auth';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 interface TimeReport {
   id: string;
@@ -123,6 +124,7 @@ const MonthlyCard = styled.div`
 `;
 
 const Salary: React.FC = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     month: '',
     gross: '',
@@ -138,7 +140,7 @@ const Salary: React.FC = () => {
     try {
       const user = await getCurrentUserWithRole();
       if (!user) {
-        setError('Du är inte inloggad');
+        setError(t('not_logged_in'));
         setLoading(false);
         return;
       }
@@ -179,7 +181,7 @@ const Salary: React.FC = () => {
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
-      setError('Kunde inte hämta data');
+      setError(t('could_not_fetch_data'));
       setLoading(false);
     }
   };
@@ -198,11 +200,11 @@ const Salary: React.FC = () => {
 
   const validateForm = (): boolean => {
     if (!formData.month) {
-      setError('Välj en månad');
+      setError(t('select_month'));
       return false;
     }
     if (!formData.gross || isNaN(Number(formData.gross)) || Number(formData.gross) <= 0) {
-      setError('Ange ett giltigt lönebelopp');
+      setError(t('enter_valid_salary_amount'));
       return false;
     }
     return true;
@@ -219,7 +221,7 @@ const Salary: React.FC = () => {
 
     const user = await getCurrentUserWithRole();
     if (!user) {
-      setError('Du är inte inloggad');
+      setError(t('not_logged_in'));
       return;
     }
 
@@ -235,7 +237,7 @@ const Salary: React.FC = () => {
       };
 
       await addDoc(collection(db, 'salaries'), salaryData);
-      setSuccess('Lön sparad');
+      setSuccess(t('salary_saved'));
       setFormData({
         month: '',
         gross: '',
@@ -244,7 +246,7 @@ const Salary: React.FC = () => {
       await fetchData();
     } catch (err) {
       console.error('Error saving salary:', err);
-      setError('Kunde inte spara lönen. Försök igen.');
+      setError(t('could_not_save_salary'));
     } finally {
       setIsSubmitting(false);
     }
@@ -260,7 +262,7 @@ const Salary: React.FC = () => {
     return (
       <Container>
         <div className="flex justify-center items-center h-64">
-          <p className="text-gray-600">Laddar...</p>
+          <p className="text-gray-600">{t('loading')}</p>
         </div>
       </Container>
     );
@@ -268,14 +270,14 @@ const Salary: React.FC = () => {
 
   return (
     <Container>
-      <h1 className="text-2xl font-bold mb-6">Löneöversikt</h1>
+      <h1 className="text-2xl font-bold mb-6">{t('salary_and_timereports')}</h1>
 
       {!monthlySummary?.salary ? (
         <Form onSubmit={handleSubmit}>
-          <h2 className="text-xl font-semibold mb-4">Registrera lön</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('register_salary')}</h2>
           
           <FormGroup>
-            <Label htmlFor="month">Månad</Label>
+            <Label htmlFor="month">{t('month')}</Label>
             <Input
               type="month"
               id="month"
@@ -287,7 +289,7 @@ const Salary: React.FC = () => {
           </FormGroup>
 
           <FormGroup>
-            <Label htmlFor="gross">Lönebelopp (brutto)</Label>
+            <Label htmlFor="gross">{t('salary_amount_kr')}</Label>
             <Input
               type="number"
               id="gross"
@@ -301,7 +303,7 @@ const Salary: React.FC = () => {
           </FormGroup>
 
           <FormGroup>
-            <Label htmlFor="comment">Kommentar (valfritt)</Label>
+            <Label htmlFor="comment">{t('comment_optional')}</Label>
             <TextArea
               id="comment"
               name="comment"
@@ -314,7 +316,7 @@ const Salary: React.FC = () => {
           {success && <SuccessMessage>{success}</SuccessMessage>}
 
           <SubmitButton type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Sparar...' : 'Spara lön'}
+            {isSubmitting ? t('saving') : t('save_salary')}
           </SubmitButton>
         </Form>
       ) : (
@@ -325,23 +327,23 @@ const Salary: React.FC = () => {
           
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <span className="text-gray-600">🗓️ Månad:</span>
+              <span className="text-gray-600">🗓️ {t('month')}:</span>
               <span>{formatMonth(monthlySummary.month)}</span>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-gray-600">🕐 Arbetade timmar:</span>
-              <span>{monthlySummary.totalHours} h</span>
+              <span className="text-gray-600">🕐 {t('worked_hours')}:</span>
+              <span>{monthlySummary.totalHours} {t('hours')}</span>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-gray-600">💰 Lön (brutto):</span>
-              <span>{monthlySummary.salary.gross.toLocaleString()} kr</span>
+              <span className="text-gray-600">💰 {t('salary_gross')}:</span>
+              <span>{monthlySummary.salary.gross.toLocaleString()} {t('kr')}</span>
             </div>
 
             {monthlySummary.salary.comment && (
               <div className="mt-4 text-sm text-gray-500">
-                <span className="font-medium">Kommentar:</span> {monthlySummary.salary.comment}
+                <span className="font-medium">{t('comment')}:</span> {monthlySummary.salary.comment}
               </div>
             )}
           </div>

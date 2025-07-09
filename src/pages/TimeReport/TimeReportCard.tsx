@@ -5,6 +5,7 @@ import { collection, addDoc, serverTimestamp, query, where, getDocs, deleteDoc, 
 import { db } from '../../config/firebase';
 import styled from 'styled-components';
 import { getCurrentUserWithRole } from '../../utils/auth';
+import { useTranslation } from 'react-i18next';
 
 interface TimeReport {
   id: string;
@@ -157,6 +158,7 @@ const ReportField = styled.div`
 `;
 
 const TimeReportCard: React.FC = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<TimeReportForm>({
     date: '',
     hours: '',
@@ -174,7 +176,7 @@ const TimeReportCard: React.FC = () => {
     try {
       const user = await getCurrentUserWithRole();
       if (!user) {
-        setError('Du är inte inloggad');
+        setError(t('not_logged_in'));
         setLoading(false);
         return;
       }
@@ -195,7 +197,7 @@ const TimeReportCard: React.FC = () => {
       setLoading(false);
     } catch (error) {
       console.error('Error fetching reports:', error);
-      setError('Kunde inte hämta tidrapporter');
+      setError(t('failed_to_fetch_reports'));
       setLoading(false);
     }
   };
@@ -214,19 +216,19 @@ const TimeReportCard: React.FC = () => {
 
   const validateForm = (): boolean => {
     if (!formData.date) {
-      setError('Välj ett datum');
+      setError(t('select_date'));
       return false;
     }
     if (!formData.hours || isNaN(Number(formData.hours)) || Number(formData.hours) <= 0) {
-      setError('Ange ett giltigt antal timmar');
+      setError(t('enter_valid_hours'));
       return false;
     }
     if (!formData.project.trim()) {
-      setError('Ange ett projekt');
+      setError(t('enter_project'));
       return false;
     }
     if (!formData.description.trim()) {
-      setError('Ange en beskrivning');
+      setError(t('enter_description'));
       return false;
     }
     return true;
@@ -243,7 +245,7 @@ const TimeReportCard: React.FC = () => {
 
     const user = await getCurrentUserWithRole();
     if (!user) {
-      setError('Du är inte inloggad');
+      setError(t('not_logged_in'));
       return;
     }
 
@@ -263,7 +265,7 @@ const TimeReportCard: React.FC = () => {
       await addDoc(collection(db, 'timereports'), timeReportData);
       console.log('Report created');
       
-      setSuccess('Tidrapport sparad');
+      setSuccess(t('report_saved'));
       setFormData({
         date: '',
         hours: '',
@@ -275,25 +277,25 @@ const TimeReportCard: React.FC = () => {
       await fetchReports();
     } catch (err) {
       console.error('Error creating time report:', err);
-      setError('Kunde inte skapa tidrapporten. Försök igen.');
+      setError(t('failed_to_create_report'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (reportId: string) => {
-    if (!window.confirm('Är du säker på att du vill ta bort denna tidrapport?')) {
+    if (!window.confirm(t('confirm_delete_report'))) {
       return;
     }
 
     setIsDeleting(reportId);
     try {
       await deleteDoc(doc(db, 'timereports', reportId));
-      setSuccess('Tidrapport borttagen');
+      setSuccess(t('report_deleted'));
       await fetchReports();
     } catch (err) {
       console.error('Error deleting report:', err);
-      setError('Kunde inte ta bort tidrapporten. Försök igen.');
+      setError(t('failed_to_delete_report'));
     } finally {
       setIsDeleting(null);
     }
@@ -312,7 +314,7 @@ const TimeReportCard: React.FC = () => {
     return (
       <Container>
         <div className="flex justify-center items-center h-64">
-          <p className="text-gray-600">Laddar...</p>
+          <p className="text-gray-600">{t('loading')}</p>
         </div>
       </Container>
     );
@@ -320,14 +322,14 @@ const TimeReportCard: React.FC = () => {
 
   return (
     <Container>
-      <h1 className="text-2xl font-bold mb-6">Tidrapporter</h1>
+      <h1 className="text-2xl font-bold mb-6">{t('time_reports')}</h1>
 
       <Form onSubmit={handleSubmit}>
-        <h2 className="text-xl font-semibold mb-4">Registrera tid</h2>
+        <h2 className="text-xl font-semibold mb-4">{t('register_time')}</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormGroup>
-            <Label htmlFor="date">Datum</Label>
+            <Label htmlFor="date">{t('date')}</Label>
             <Input
               type="date"
               id="date"
@@ -339,7 +341,7 @@ const TimeReportCard: React.FC = () => {
           </FormGroup>
 
           <FormGroup>
-            <Label htmlFor="hours">Timmar</Label>
+            <Label htmlFor="hours">{t('hours')}</Label>
             <Input
               type="number"
               id="hours"
@@ -354,7 +356,7 @@ const TimeReportCard: React.FC = () => {
         </div>
 
         <FormGroup>
-          <Label htmlFor="project">Projekt</Label>
+          <Label htmlFor="project">{t('project')}</Label>
           <Input
             type="text"
             id="project"
@@ -366,7 +368,7 @@ const TimeReportCard: React.FC = () => {
         </FormGroup>
 
         <FormGroup>
-          <Label htmlFor="description">Beskrivning</Label>
+          <Label htmlFor="description">{t('description')}</Label>
           <TextArea
             id="description"
             name="description"
@@ -381,14 +383,14 @@ const TimeReportCard: React.FC = () => {
         {success && <SuccessMessage>{success}</SuccessMessage>}
 
         <SubmitButton type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Sparar...' : 'Spara tidrapport'}
+          {isSubmitting ? t('saving') : t('save_report')}
         </SubmitButton>
       </Form>
 
       <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Mina tidrapporter</h2>
+        <h2 className="text-xl font-semibold mb-4">{t('my_time_reports')}</h2>
         {reports.length === 0 ? (
-          <p>Inga tidrapporter hittades</p>
+          <p>{t('no_reports_found')}</p>
         ) : (
           reports.map(report => (
             <ReportCard key={report.id}>
@@ -401,14 +403,14 @@ const TimeReportCard: React.FC = () => {
                   disabled={isDeleting === report.id}
                 >
                   <Trash2 size={16} />
-                  {isDeleting === report.id ? 'Tar bort...' : 'Ta bort'}
+                  {isDeleting === report.id ? t('deleting') : t('delete')}
                 </DeleteButton>
               </ReportHeader>
               
               <ReportContent>
                 <ReportField>
                   <Clock size={18} className="text-blue-400" />
-                  <span>{report.hours} timmar</span>
+                  <span>{report.hours} {t('hours')}</span>
                 </ReportField>
                 
                 <ReportField>

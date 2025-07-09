@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { DollarSign, Clock, ArrowRightCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const SalaryCard: React.FC = () => {
+  const { t } = useTranslation();
   const [monthlySalary, setMonthlySalary] = useState(0);
 
   const overtimeBalance = 6.5;
@@ -22,7 +24,7 @@ const SalaryCard: React.FC = () => {
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <DollarSign className="text-green-500" size={32} />
-        <h1 className="text-2xl font-bold text-gray-800">Salary Overview</h1>
+        <h1 className="text-2xl font-bold text-gray-800">{t('salary_overview')}</h1>
       </div>
 
       {/* Salary box */}
@@ -30,15 +32,15 @@ const SalaryCard: React.FC = () => {
         <div className="flex items-center gap-4">
           <DollarSign className="text-green-500" size={36} />
           <div>
-            <p className="text-gray-600 text-sm">Monthly Salary</p>
-            <p className="text-2xl font-bold">{monthlySalary.toLocaleString('sv-SE')} kr</p>
+            <p className="text-gray-600 text-sm">{t('monthly_salary')}</p>
+            <p className="text-2xl font-bold">{monthlySalary.toLocaleString('sv-SE')} {t('kr')}</p>
           </div>
         </div>
         <div className="mt-4 md:mt-0 flex items-center gap-4">
           <Clock className="text-blue-500" size={28} />
           <div>
-            <p className="text-gray-600 text-sm">Overtime Balance</p>
-            <p className="font-semibold text-lg">{overtimeBalance} h</p>
+            <p className="text-gray-600 text-sm">{t('overtime_balance')}</p>
+            <p className="font-semibold text-lg">{overtimeBalance} {t('hours')}</p>
           </div>
         </div>
       </div>
@@ -46,19 +48,19 @@ const SalaryCard: React.FC = () => {
       {/* Summary list */}
       <ul className="bg-white rounded-xl shadow divide-y divide-gray-200">
         <li className="p-4 flex justify-between">
-          <span className="text-gray-600">ATF (Arbetstidsförkortning)</span>
-          <span className="font-medium">{atf} h</span>
+          <span className="text-gray-600">{t('atf')}</span>
+          <span className="font-medium">{atf} {t('hours')}</span>
         </li>
         <li className="p-4 flex justify-between">
-          <span className="text-gray-600">Upcoming Payouts</span>
-          <span className="font-medium">{upcomingPayout} st</span>
+          <span className="text-gray-600">{t('upcoming_payouts')}</span>
+          <span className="font-medium">{upcomingPayout} {t('pcs')}</span>
         </li>
       </ul>
 
       {/* View details */}
       <div className="flex justify-end mt-6">
         <button className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg shadow transition hover:scale-105">
-          View Details <ArrowRightCircle size={20} />
+          {t('view_details')} <ArrowRightCircle size={20} />
         </button>
       </div>
     </div>

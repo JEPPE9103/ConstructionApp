@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { auth } from '../config/firebase';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 const Nav = styled.nav`
   background-color: #fff;
@@ -47,6 +48,7 @@ const LogoutButton = styled.button`
 `;
 
 const Navigation: React.FC = () => {
+  const { i18n } = useTranslation();
   const handleLogout = async () => {
     try {
       await auth.signOut();
@@ -62,6 +64,10 @@ const Navigation: React.FC = () => {
           <NavLink to="/">Tidrapporter</NavLink>
           <NavLink to="/timereport">Ny tidrapport</NavLink>
         </NavLinks>
+        <div style={{ marginLeft: 'auto', padding: '0 1rem' }}>
+          <button onClick={() => i18n.changeLanguage('sv')}>SV</button>
+          <button onClick={() => i18n.changeLanguage('en')} style={{ marginLeft: 8 }}>EN</button>
+        </div>
         <LogoutButton onClick={handleLogout}>Logga ut</LogoutButton>
       </NavContainer>
     </Nav>

@@ -2,6 +2,7 @@ import { FiClock, FiDollarSign, FiMap, FiMapPin, FiUpload, FiHome, FiLogOut, FiM
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Dummy user data (byt ut med riktig auth i framtiden)
 const user = {
@@ -21,32 +22,35 @@ const navLinks = [
   ...(user.isAdmin ? [{ name: 'Admin Panel', to: '/dashboard/admin', icon: <FiHome size={20} /> }] : []),
 ];
 
-const Sidebar = ({ onClose }: { onClose?: () => void }) => (
-  <aside className="w-64 min-h-screen bg-white border-r flex flex-col">
-    <div className="flex items-center gap-2 px-6 py-6 border-b">
-      <span className="text-blue-600"><FiHome size={28} /></span>
-      <span className="text-xl font-bold">Byggappen</span>
-    </div>
-    <nav className="flex-1 px-2 py-4 space-y-1">
-      {navLinks.map((link) => (
-        <NavLink
-          key={link.name}
-          to={link.to}
-          className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 transition font-medium ${
-              isActive ? 'bg-blue-50 text-blue-600' : ''
-            }`
-          }
-          end={link.to === '/dashboard'}
-          onClick={onClose}
-        >
-          {link.icon}
-          {link.name}
-        </NavLink>
-      ))}
-    </nav>
-  </aside>
-);
+const Sidebar = ({ onClose }: { onClose?: () => void }) => {
+  const { t } = useTranslation();
+  return (
+    <aside className="w-64 min-h-screen bg-white border-r flex flex-col">
+      <div className="flex items-center gap-2 px-6 py-6 border-b">
+        <span className="text-blue-600"><FiHome size={28} /></span>
+        <span className="text-xl font-bold">{t('app_name')}</span>
+      </div>
+      <nav className="flex-1 px-2 py-4 space-y-1">
+        {navLinks.map((link) => (
+          <NavLink
+            key={link.name}
+            to={link.to}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 transition font-medium ${
+                isActive ? 'bg-blue-50 text-blue-600' : ''
+              }`
+            }
+            end={link.to === '/dashboard'}
+            onClick={onClose}
+          >
+            {link.icon}
+            {t(link.name.replace(/ /g, '_').toLowerCase())}
+          </NavLink>
+        ))}
+      </nav>
+    </aside>
+  );
+};
 
 const MobileDrawer = ({ open, onClose }: { open: boolean; onClose: () => void }) => (
   <div className={`fixed inset-0 z-40 ${open ? '' : 'pointer-events-none'}`}> 
@@ -65,6 +69,7 @@ const MobileDrawer = ({ open, onClose }: { open: boolean; onClose: () => void })
 
 const Topbar = ({ onMenuClick }: { onMenuClick: () => void }) => {
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
 
   const handleSignOut = async () => {
     try {
@@ -96,6 +101,21 @@ const Topbar = ({ onMenuClick }: { onMenuClick: () => void }) => {
         >
           <FiLogOut size={22} />
         </button>
+        {/* Språkväxlare */}
+        <div className="flex gap-2 ml-4">
+          <button
+            onClick={() => i18n.changeLanguage('sv')}
+            className="px-2 py-1 rounded border border-gray-300 text-xs hover:bg-gray-100"
+          >
+            SV
+          </button>
+          <button
+            onClick={() => i18n.changeLanguage('en')}
+            className="px-2 py-1 rounded border border-gray-300 text-xs hover:bg-gray-100"
+          >
+            EN
+          </button>
+        </div>
       </div>
     </header>
   );
