@@ -105,7 +105,7 @@ const AdminPanel: React.FC = () => {
   if (!isAdmin) return <Container>{message}</Container>;
 
   return (
-    <Container>
+    <Container className="p-2 sm:p-4 md:p-8 max-w-xs sm:max-w-2xl mx-auto">
       <Title>Adminpanel</Title>
       <div style={{ marginBottom: 24 }}>
         <Input

@@ -10,7 +10,7 @@ const mockProjects = [
 
 const ProjectList = () => {
   return (
-    <div className="w-full bg-gradient-to-br from-[#f8fbff] to-[#f0f4ff] rounded-2xl shadow-xl p-6 animate-fade-in">
+    <div className="w-full bg-gradient-to-br from-[#f8fbff] to-[#f0f4ff] rounded-2xl shadow-xl p-2 sm:p-4 md:p-8 animate-fade-in max-w-xs sm:max-w-2xl mx-auto">
       <div className="flex items-center gap-3 mb-6">
         <FiFolderPlus className="text-indigo-500" size={28} />
         <h1 className="text-2xl font-bold text-gray-800">Projects</h1>

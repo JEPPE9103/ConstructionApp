@@ -38,7 +38,7 @@ const ProjectInfo = () => {
   }
 
   return (
-    <div className="w-full bg-gradient-to-br from-[#fff] to-[#f0f4ff] rounded-2xl shadow-xl p-6 animate-fade-in">
+    <div className="w-full bg-gradient-to-br from-[#f8fbff] to-[#f0f4ff] rounded-2xl shadow-xl p-2 sm:p-4 md:p-8 animate-fade-in max-w-xs sm:max-w-2xl mx-auto">
       <button
         onClick={() => navigate(-1)}
         className="mb-4 text-blue-600 hover:underline flex items-center gap-2"

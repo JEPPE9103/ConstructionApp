@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 const UploadPhotoCard: React.FC = () => {
   const { t } = useTranslation();
   return (
-    <div className="w-full bg-gradient-to-br from-[#f5f0ff] to-[#f8f5ff] rounded-2xl shadow-xl p-4 md:p-8 animate-fade-in">
+    <div className="w-full bg-gradient-to-br from-[#f8fbff] to-[#f0f4ff] rounded-2xl shadow-xl p-2 sm:p-4 md:p-8 animate-fade-in max-w-xs sm:max-w-2xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-3">
           <Upload className="text-purple-500" size={32} />

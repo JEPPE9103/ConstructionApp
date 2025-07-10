@@ -20,7 +20,7 @@ const SalaryCard: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full bg-gradient-to-br from-[#fff9f9] to-[#f0f8ff] rounded-2xl shadow-xl p-4 md:p-8 animate-fade-in">
+    <div className="w-full bg-gradient-to-br from-[#fff9f9] to-[#f0f8ff] rounded-2xl shadow-xl p-2 sm:p-4 md:p-8 animate-fade-in">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <DollarSign className="text-green-500" size={32} />
@@ -28,19 +28,19 @@ const SalaryCard: React.FC = () => {
       </div>
 
       {/* Salary box */}
-      <div className="p-6 bg-white rounded-xl shadow flex flex-col md:flex-row items-center justify-between mb-6">
+      <div className="p-4 sm:p-6 bg-white rounded-xl shadow flex flex-col md:flex-row items-center justify-between mb-6 max-w-xs sm:max-w-full mx-auto">
         <div className="flex items-center gap-4">
           <DollarSign className="text-green-500" size={36} />
           <div>
             <p className="text-gray-600 text-sm">{t('monthly_salary')}</p>
-            <p className="text-2xl font-bold">{monthlySalary.toLocaleString('sv-SE')} {t('kr')}</p>
+            <p className="text-2xl sm:text-2xl font-bold">{monthlySalary.toLocaleString('sv-SE')} {t('kr')}</p>
           </div>
         </div>
         <div className="mt-4 md:mt-0 flex items-center gap-4">
           <Clock className="text-blue-500" size={28} />
           <div>
             <p className="text-gray-600 text-sm">{t('overtime_balance')}</p>
-            <p className="font-semibold text-lg">{overtimeBalance} {t('hours')}</p>
+            <p className="font-semibold text-lg sm:text-lg">{overtimeBalance} {t('hours')}</p>
           </div>
         </div>
       </div>

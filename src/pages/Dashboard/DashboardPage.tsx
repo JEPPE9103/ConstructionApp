@@ -32,12 +32,13 @@ const Sidebar = ({ onClose }: { onClose?: () => void }) => {
             key={link.key}
             to={link.to}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 transition font-medium ${
+              `flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-100 transition font-medium text-base sm:text-sm ${
                 isActive ? 'bg-blue-50 text-blue-600' : ''
               }`
             }
             end={link.to === '/dashboard'}
             onClick={onClose}
+            style={{ touchAction: 'manipulation' }}
           >
             {link.icon}
             {t(link.key)}
@@ -52,12 +53,13 @@ const MobileDrawer = ({ open, onClose }: { open: boolean; onClose: () => void })
   <div className={`fixed inset-0 z-40 ${open ? '' : 'pointer-events-none'}`}> 
     {/* Overlay */}
     <div
-      className={`fixed inset-0 bg-black transition-opacity duration-200 ${open ? 'opacity-40' : 'opacity-0'}`}
+      className={`fixed inset-0 bg-black transition-opacity duration-200 ${open ? 'opacity-50' : 'opacity-0'}`}
       onClick={onClose}
       aria-hidden="true"
+      style={{ touchAction: 'manipulation' }}
     />
     {/* Drawer */}
-    <div className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-200 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
+    <div className={`fixed top-0 left-0 h-full w-4/5 max-w-xs bg-white shadow-lg transform transition-transform duration-200 ${open ? 'translate-x-0' : '-translate-x-full'} sm:w-64`}>
       <Sidebar onClose={onClose} />
     </div>
   </div>
@@ -148,7 +150,7 @@ const DashboardPage = () => {
       <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <div className="flex-1 flex flex-col min-h-screen">
         <Topbar onMenuClick={() => setDrawerOpen(true)} />
-        <main className="flex-1 flex flex-col items-center bg-white container mx-auto px-4 py-4">
+        <main className="flex-1 flex flex-col items-center bg-white container mx-auto px-2 sm:px-4 py-2 sm:py-4">
           <div className="w-full max-w-5xl">
             <Outlet />
           </div>
