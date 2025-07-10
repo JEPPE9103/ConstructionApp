@@ -15,7 +15,6 @@ const Register = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [company, setCompany] = useState('');

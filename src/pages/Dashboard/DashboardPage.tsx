@@ -14,17 +14,6 @@ const user = {
   isAdmin: true, // Byt till roll från backend sen
 };
 
-// Navigation länkar
-const navLinks = [
-  { key: 'dashboard', name: 'Dashboard', to: '/dashboard', icon: <FiHome size={20} /> },
-  { key: 'time_report', name: 'Time Report', to: '/dashboard/time-report', icon: <FiClock size={20} /> },
-  { key: 'check_in_out', name: 'Check In/Out', to: '/dashboard/check-in', icon: <FiMapPin size={20} /> },
-  { key: 'map_check_in', name: 'Map Check-In', to: '/dashboard/check-in/map', icon: <FiMap size={20} /> },
-  { key: 'salary', name: 'Salary', to: '/dashboard/salary', icon: <FiDollarSign size={20} /> },
-  { key: 'upload_photo', name: 'Upload Photo', to: '/dashboard/upload', icon: <FiUpload size={20} /> },
-  ...(user.isAdmin ? [{ key: 'admin_panel', name: 'Admin Panel', to: '/dashboard/admin', icon: <FiHome size={20} /> }] : []),
-];
-
 const Sidebar = ({ onClose }: { onClose?: () => void }) => {
   const { t } = useTranslation();
   const [firebaseUser] = useAuthState(auth);
