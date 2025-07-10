@@ -324,7 +324,7 @@ const TimeReportCard: React.FC = () => {
     <Container className="p-2 sm:p-4 md:p-8 max-w-xs sm:max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">{t('time_reports')}</h1>
 
-      <Form className="space-y-4 sm:space-y-6">
+      <Form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
         <h2 className="text-xl font-semibold mb-4">{t('register_time')}</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
