@@ -7,13 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 
-// Dummy user data (byt ut med riktig auth i framtiden)
-const user = {
-  name: 'Jesper',
-  email: 'jespe9103@gmail.com',
-  isAdmin: true, // Byt till roll från backend sen
-};
-
 const Sidebar = ({ onClose }: { onClose?: () => void }) => {
   const { t } = useTranslation();
   const [firebaseUser] = useAuthState(auth);

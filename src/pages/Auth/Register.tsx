@@ -5,7 +5,6 @@ import { auth } from '../../config/firebase';
 import { db } from '../../config/firebase';
 import { setDoc, doc } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
 
 const Register = () => {
   const { t, i18n } = useTranslation();
