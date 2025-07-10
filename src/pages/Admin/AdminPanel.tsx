@@ -5,12 +5,21 @@ import { getCurrentUserWithRole } from '../../utils/auth';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  max-width: 700px;
-  margin: 40px auto;
-  padding: 32px 24px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 8px 4px;
   background: #f5f8ff;
   border-radius: 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  @media (min-width: 640px) {
+    max-width: 700px;
+    padding: 20px 16px;
+  }
+  @media (min-width: 1024px) {
+    max-width: 1200px;
+    padding: 32px 24px;
+  }
 `;
 
 const Title = styled.h2`

@@ -24,21 +24,35 @@ interface TimeReportForm {
 }
 
 const Container = styled.div`
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 32px 24px;
-  background: #f5f8ff; /* Ljusblå bakgrund likt bilden */
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 8px 4px;
+  background: #f5f8ff;
   border-radius: 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  @media (min-width: 640px) {
+    max-width: 700px;
+    padding: 20px 16px;
+  }
+  @media (min-width: 1024px) {
+    max-width: 800px;
+    padding: 32px 24px;
+  }
 `;
 
 const Form = styled.form`
-  max-width: 600px;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 20px;
+  padding: 12px 8px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  @media (min-width: 640px) {
+    max-width: 600px;
+    padding: 20px;
+  }
 `;
 
 const FormGroup = styled.div`
@@ -131,11 +145,15 @@ const DeleteButton = styled.button`
 
 const ReportCard = styled.div`
   background: white;
-  padding: 20px;
+  padding: 12px 8px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   position: relative;
+  @media (min-width: 640px) {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
 `;
 
 const ReportHeader = styled.div`

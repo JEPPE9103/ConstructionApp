@@ -97,28 +97,30 @@ const Topbar = ({ onMenuClick }: { onMenuClick: () => void }) => {
     : profile?.email || firebaseUser?.email || '';
 
   return (
-    <header className="flex justify-between items-center h-16 px-4 md:px-8 border-b bg-white w-full">
+    <header className="flex justify-between items-center h-16 sm:h-20 px-2 sm:px-4 md:px-8 py-1 sm:py-2 border-b bg-white w-full">
       {/* Hamburger for mobile */}
       <button className="md:hidden p-2 rounded hover:bg-gray-100" onClick={onMenuClick} aria-label="Öppna meny">
-        <FiMenu size={26} />
+        <FiMenu size={24} className="sm:hidden" />
+        <FiMenu size={26} className="hidden sm:inline" />
       </button>
-      <div className="flex items-center gap-3 ml-auto">
+      <div className="flex items-center gap-2 sm:gap-3 ml-auto">
         <div className="text-right">
-          <div className="font-semibold text-gray-800">{displayName}</div>
+          <div className="font-semibold text-gray-800 text-sm sm:text-base">{displayName}</div>
           <div className="text-xs text-gray-500">{profile?.email || firebaseUser?.email || ''}</div>
         </div>
-        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700">
+        <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700 text-base sm:text-lg">
           {displayName[0]}
         </div>
         <button
           onClick={handleSignOut}
           title="Log out"
-          className="ml-4 p-2 rounded-full hover:bg-gray-100 transition text-blue-600"
+          className="ml-2 sm:ml-4 p-2 rounded-full hover:bg-gray-100 transition text-blue-600"
         >
-          <FiLogOut size={22} />
+          <FiLogOut size={20} className="sm:hidden" />
+          <FiLogOut size={22} className="hidden sm:inline" />
         </button>
         {/* Språkväxlare */}
-        <div className="flex gap-2 ml-4">
+        <div className="flex gap-1 sm:gap-2 ml-2 sm:ml-4">
           <button
             onClick={() => i18n.changeLanguage('sv')}
             className="px-2 py-1 rounded border border-gray-300 text-xs hover:bg-gray-100"
@@ -150,8 +152,8 @@ const DashboardPage = () => {
       <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <div className="flex-1 flex flex-col min-h-screen">
         <Topbar onMenuClick={() => setDrawerOpen(true)} />
-        <main className="flex-1 flex flex-col items-center bg-white w-full px-2 sm:px-4 py-2 sm:py-4 overflow-x-hidden">
-          <div className="w-full max-w-5xl">
+        <main className="flex-1 flex flex-col items-center bg-white w-full px-1 sm:px-4 py-2 sm:py-4 overflow-x-hidden">
+          <div className="w-full max-w-full sm:max-w-3xl md:max-w-5xl px-0 sm:px-2">
             <Outlet />
           </div>
         </main>

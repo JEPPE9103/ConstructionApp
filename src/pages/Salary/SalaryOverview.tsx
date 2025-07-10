@@ -30,17 +30,30 @@ interface MonthlySummary {
 }
 
 const Container = styled.div`
-  max-width: 1200px;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 20px;
+  padding: 8px 4px;
+  @media (min-width: 640px) {
+    max-width: 700px;
+    padding: 20px 16px;
+  }
+  @media (min-width: 1024px) {
+    max-width: 1200px;
+    padding: 32px 24px;
+  }
 `;
 
 const Form = styled.form`
   background: white;
-  padding: 20px;
+  padding: 12px 8px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  @media (min-width: 640px) {
+    padding: 20px;
+    margin-bottom: 30px;
+  }
 `;
 
 const FormGroup = styled.div`
@@ -114,10 +127,14 @@ const SuccessMessage = styled.div`
 
 const MonthlyCard = styled.div`
   background: white;
-  padding: 20px;
+  padding: 12px 8px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+  @media (min-width: 640px) {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
 `;
 
 const SalaryOverview: React.FC = () => {
