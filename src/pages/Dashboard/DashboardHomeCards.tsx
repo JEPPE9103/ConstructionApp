@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 const DashboardHomeCards = () => {
   const { t } = useTranslation();
   return (
-    <div className="container mx-auto px-1 sm:px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 mt-2 sm:mt-4 md:mt-8 overflow-x-auto">
+    <div className="w-full px-1 sm:px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 mt-2 sm:mt-4 md:mt-8 overflow-x-hidden">
       {/* Time Report */}
       <Link
         to="/dashboard/time-report"

@@ -141,7 +141,7 @@ const DashboardPage = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex min-h-screen bg-white overflow-x-hidden">
       {/* Sidebar for desktop */}
       <div className="hidden md:flex">
         <Sidebar />
@@ -150,7 +150,7 @@ const DashboardPage = () => {
       <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <div className="flex-1 flex flex-col min-h-screen">
         <Topbar onMenuClick={() => setDrawerOpen(true)} />
-        <main className="flex-1 flex flex-col items-center bg-white container mx-auto px-2 sm:px-4 py-2 sm:py-4">
+        <main className="flex-1 flex flex-col items-center bg-white w-full px-2 sm:px-4 py-2 sm:py-4 overflow-x-hidden">
           <div className="w-full max-w-5xl">
             <Outlet />
           </div>
