@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../config/firebase';
 import { useTranslation } from 'react-i18next';
 
 export const Login = () => {
   const { t, i18n } = useTranslation();
+  const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -40,6 +41,12 @@ export const Login = () => {
           <div className="flex justify-center mb-6">
             <img src="/byggapp.png" alt="Byggio Logo" className="h-16 w-auto object-contain" />
           </div>
+          {/* Success message after registration */}
+          {location.state?.registered && (
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-sm text-green-700">{t('account_created_login')}</p>
+            </div>
+          )}
           {/* Header */}
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
             {t('login_title')}

@@ -91,5 +91,11 @@
   "could_not_fetch_location": "Could not fetch location information.",
   "you_are_here": "You are here",
   "checked_in": "Checked in ✅",
-  "fetching_location": "Fetching location..."
+  "fetching_location": "Fetching location...",
+  "account_created_login": "Your account has been created. Please log in to continue.",
+  "first_name": "First name",
+  "last_name": "Last name",
+  "company_name": "Company name",
+  "optional": "optional",
+  "name_required": "First and last name are required."
 } 

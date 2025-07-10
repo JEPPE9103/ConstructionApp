@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../config/firebase';
+import { db } from '../../config/firebase';
+import { setDoc, doc } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 
 const Register = () => {
   const { t, i18n } = useTranslation();
@@ -12,6 +15,10 @@ const Register = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [company, setCompany] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,11 +35,24 @@ const Register = () => {
       return;
     }
 
+    if (!firstName || !lastName) {
+      setError(t('name_required'));
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      navigate('/dashboard');
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Spara extra info i Firestore
+      await setDoc(doc(db, 'users', userCredential.user.uid), {
+        firstName,
+        lastName,
+        company,
+        email,
+        createdAt: new Date()
+      });
+      navigate('/login', { state: { registered: true } });
     } catch (err) {
       setError(t('register_failed'));
     } finally {
@@ -65,6 +85,27 @@ const Register = () => {
           )}
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* First Name Field */}
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                {t('first_name')}
+              </label>
+              <input type="text" id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" required />
+            </div>
+            {/* Last Name Field */}
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                {t('last_name')}
+              </label>
+              <input type="text" id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" required />
+            </div>
+            {/* Company Field (optional) */}
+            <div>
+              <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
+                {t('company_name')} ({t('optional')})
+              </label>
+              <input type="text" id="company" value={company} onChange={(e) => setCompany(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" />
+            </div>
             {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">

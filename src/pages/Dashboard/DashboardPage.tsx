@@ -1,8 +1,11 @@
 import { FiClock, FiDollarSign, FiMap, FiMapPin, FiUpload, FiHome, FiLogOut, FiMenu } from 'react-icons/fi';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../config/firebase';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../config/firebase';
 
 // Dummy user data (byt ut med riktig auth i framtiden)
 const user = {
@@ -24,6 +27,17 @@ const navLinks = [
 
 const Sidebar = ({ onClose }: { onClose?: () => void }) => {
   const { t } = useTranslation();
+  const [firebaseUser] = useAuthState(auth);
+  const isAdmin = firebaseUser?.email === 'jespe9103@gmail.com';
+  const navLinks = [
+    { key: 'dashboard', name: 'Dashboard', to: '/dashboard', icon: <FiHome size={20} /> },
+    { key: 'time_report', name: 'Time Report', to: '/dashboard/time-report', icon: <FiClock size={20} /> },
+    { key: 'check_in_out', name: 'Check In/Out', to: '/dashboard/check-in', icon: <FiMapPin size={20} /> },
+    { key: 'map_check_in', name: 'Map Check-In', to: '/dashboard/check-in/map', icon: <FiMap size={20} /> },
+    { key: 'salary', name: 'Salary', to: '/dashboard/salary', icon: <FiDollarSign size={20} /> },
+    { key: 'upload_photo', name: 'Upload Photo', to: '/dashboard/upload', icon: <FiUpload size={20} /> },
+    ...(isAdmin ? [{ key: 'admin_panel', name: 'Admin Panel', to: '/dashboard/admin', icon: <FiHome size={20} /> }] : []),
+  ];
   return (
     <aside className="w-64 min-h-screen bg-white border-r flex flex-col">
       <div className="flex items-center gap-2 px-6 py-6 border-b">
@@ -70,6 +84,20 @@ const MobileDrawer = ({ open, onClose }: { open: boolean; onClose: () => void })
 const Topbar = ({ onMenuClick }: { onMenuClick: () => void }) => {
   const navigate = useNavigate();
   const { i18n } = useTranslation();
+  const [firebaseUser] = useAuthState(auth);
+  const [profile, setProfile] = useState<{ firstName?: string; lastName?: string; email?: string } | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (firebaseUser) {
+        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+        if (userDoc.exists()) {
+          setProfile(userDoc.data() as any);
+        }
+      }
+    };
+    fetchProfile();
+  }, [firebaseUser]);
 
   const handleSignOut = async () => {
     try {
@@ -80,6 +108,10 @@ const Topbar = ({ onMenuClick }: { onMenuClick: () => void }) => {
     }
   };
 
+  const displayName = profile?.firstName && profile?.lastName
+    ? `${profile.firstName} ${profile.lastName}`
+    : profile?.email || firebaseUser?.email || '';
+
   return (
     <header className="flex justify-between items-center h-16 px-4 md:px-8 border-b bg-white w-full">
       {/* Hamburger for mobile */}
@@ -88,11 +120,11 @@ const Topbar = ({ onMenuClick }: { onMenuClick: () => void }) => {
       </button>
       <div className="flex items-center gap-3 ml-auto">
         <div className="text-right">
-          <div className="font-semibold text-gray-800">{user.name}</div>
-          <div className="text-xs text-gray-500">{user.email}</div>
+          <div className="font-semibold text-gray-800">{displayName}</div>
+          <div className="text-xs text-gray-500">{profile?.email || firebaseUser?.email || ''}</div>
         </div>
         <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700">
-          {user.name[0]}
+          {displayName[0]}
         </div>
         <button
           onClick={handleSignOut}

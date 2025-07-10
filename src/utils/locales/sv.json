@@ -91,5 +91,11 @@
   "could_not_fetch_location": "Kunde inte hämta platsinformation.",
   "you_are_here": "Du är här",
   "checked_in": "Incheckad ✅",
-  "fetching_location": "Hämtar plats..."
+  "fetching_location": "Hämtar plats...",
+  "account_created_login": "Ditt konto har skapats. Logga in för att fortsätta.",
+  "first_name": "Förnamn",
+  "last_name": "Efternamn",
+  "company_name": "Företagsnamn",
+  "optional": "valfritt",
+  "name_required": "För- och efternamn krävs."
 } 
